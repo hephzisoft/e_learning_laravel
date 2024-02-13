@@ -12,15 +12,16 @@ use Illuminate\Support\Facades\Validator;
 
 class UserController extends Controller
 {
-   
     /**
      * Create User
      * @param Request $request
      * @return User
      */
     public function login(Request $request)
-    { 
-        try {
+    {
+
+
+try {
             //Validated
             $validateUser = Validator::make($request->all(),
             [
@@ -30,7 +31,7 @@ class UserController extends Controller
                 'name' => 'required',
                 'email' => 'required',
                 'open_id' => 'required',
-                // "password"=>'required|min:6'
+                //"password"=>'required|min:6'
             ]);
 
             if($validateUser->fails()){
@@ -50,7 +51,7 @@ class UserController extends Controller
             if(empty($user->id)){
                 $validated['token'] = md5(uniqid().rand(10000, 99999));
                 $validated['created_at']=Carbon::now();
-                // $validated['password'] = Hash::make($validated['password']);
+               // $validated['password'] = Hash::make($validated);
                 $userID = User::insertGetId($validated);
                 $userInfo = User::where('id', '=', $userID)->first();
                 $accessToken = $userInfo->createToken(uniqid())->plainTextToken;
@@ -64,13 +65,13 @@ class UserController extends Controller
                 ], 200);
 
             }
-            // $accessToken = $user->createToken(uniqid())->plainTextToken;
-            // $user->access_token = $accessToken;
-            // User::where('open_id', '=', $validated['open_id'])->update(['access_token'=>$accessToken]);
+            $accessToken = $user->createToken(uniqid())->plainTextToken;
+            $user->access_token = $accessToken;
+            User::where('open_id', '=', $validated['open_id'])->update(['access_token'=>$accessToken]);
             return response()->json([
                 'code' => 200,
                 'msg' => 'User logged in Successfully',
-                'token' => $user
+                'data' => $user
             ], 200);
 
         } catch (\Throwable $th) {
@@ -80,5 +81,6 @@ class UserController extends Controller
             ], 500);
         }
     }
+
 
 }

@@ -7,18 +7,18 @@ use Encore\Admin\Controllers\AdminController;
 use Encore\Admin\Form;
 use Encore\Admin\Grid;
 use Encore\Admin\Show;
-use Encore\Admin\Layout\Content;
 use Encore\Admin\Tree;
+use Encore\Admin\Layout\Content;
 
-class CourseTypeController extends AdminController{
-
+class CourseTypeController extends AdminController
+{
     public function index(Content $content){
-$tree  =  new Tree(new CourseType);
-return $content->header('Course Types')->body($tree);
+        $tree = new Tree(new CourseType);
+        return $content->header('Course Types')->body($tree);
     }
-    protected $title ='Course Types';
 
-    protected function deatail($id){
+     protected function detail($id)
+    {
         $show = new Show( CourseType::findOrFail($id));
 
         $show->field('id', __('Id'));
@@ -27,30 +27,24 @@ return $content->header('Course Types')->body($tree);
         $show->field('order', __('Order'));
         $show->field('created_at', __('Created at'));
         $show->field('updated_at', __('Updated at'));
-        $show->field('parent_id', __('Parent id'));
-    
-        // $show->disableActions();
-        // $show->disableCreateButton();
-        // $show->disableExport();
-        // $show->disableFilter();
 
-
-        return $show;   
-     }
-       
-        
+        $show->disableActions();
+        $show->disableCreateButton();
+        $show->disableExport();
+        $show->disableFilter();
+        return $show;
+    }
 
 
     protected function form()
     {
         $form = new Form(new CourseType());
-
-        $form->select('parent_id', __('Parent Category'))->options((new CourseType())::selectOptions());
-
+        $form->select('parent_id', __('Parent category'))->options((new CourseType())::selectOptions());
         $form->text('title', __('Title'));
         $form->textarea('description', __('Description'));
         $form->number('order', __('Order'));
 
         return $form;
     }
+
 }

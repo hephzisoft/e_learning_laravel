@@ -2,7 +2,7 @@
 
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
-use App\Http\Controllers\Api\UserController;
+
 
 /*
 |--------------------------------------------------------------------------
@@ -15,4 +15,14 @@ use App\Http\Controllers\Api\UserController;
 |
 */
 
-Route::post('/login', [UserController::class, 'login']);
+Route::group(['namespace' => 'Api'], function () {
+
+  
+    Route::post('/login', 'UserController@login');
+    // AUTHENTICATION MODDLEWARE
+    Route::group(['middleware' => 'auth:sanctum'], function () {
+        Route::any('/courselist', 'CourseController@courseList');
+        Route::any('/coursedetail', 'CourseController@courseDetail');
+    });
+
+});
